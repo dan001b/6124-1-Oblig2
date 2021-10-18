@@ -5,6 +5,8 @@
  */
 package client;
 
+import java.util.Random;
+
 import javafx.application.Application;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
@@ -15,6 +17,7 @@ import javafx.scene.layout.StackPane;
 import javafx.stage.Stage;
 import model.AVLTree;
 import model.BST;
+import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.control.Label;
 import javafx.scene.layout.BorderPane;
@@ -40,13 +43,15 @@ public class Oblig2 extends Application {
         TextField tfKey = new TextField();
         tfKey.setPrefColumnCount(3);
         tfKey.setAlignment(Pos.BASELINE_RIGHT);
-        Button btInsert = new Button("Insert");
-        Button btDelete = new Button("Delete");
+        Button btInsert = new Button("Sett inn");
+        Button btDelete = new Button("Slett");
+        Button btSok = new Button("Søk");
+        Button btRndInt = new Button("Sett inn 10 tall");
         HBox hBox = new HBox();
         hBox.getChildren().addAll(
-                new Label("Tall: "), tfKey, btInsert, btDelete
-        );
+                new Label("Tall: "), tfKey, btInsert, btDelete, btSok, btRndInt);
         hBox.setAlignment(Pos.CENTER);
+        hBox.setSpacing(5);
         pane.setBottom(hBox);
         btInsert.setOnAction(e -> {
             int key = Integer.parseInt(tfKey.getText());
@@ -71,10 +76,22 @@ public class Oblig2 extends Application {
                 view.setStatus(key + " er slettet");
             }
         });
+        
+        btSok.setOnAction(e -> {
+            int key = Integer.parseInt(tfKey.getText());
+            if (!tree.search(key)) {
+                view.displayTree(); // Trengs denne?
+                view.setStatus(key + " finnes ikke");
+            } else {
+                tree.search(key);
+                view.displayTree();
+                view.setStatus(key + " ble funnet!");
+            }
+        });
 
-        Scene scene = new Scene(pane, 300, 250);
+        Scene scene = new Scene(pane, 600, 400);
 
-        primaryStage.setTitle("Hello World!");
+        primaryStage.setTitle("AVL Tree");
         primaryStage.setScene(scene);
         primaryStage.show();
 
