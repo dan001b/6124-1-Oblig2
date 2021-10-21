@@ -5,13 +5,14 @@
  */
 package client;
 
-import java.util.Random;
-
+import java.util.Optional;
 import javafx.application.Application;
-import javafx.event.ActionEvent;
-import javafx.event.EventHandler;
 import javafx.scene.Scene;
+import javafx.scene.control.Alert;
+import javafx.scene.control.Alert.AlertType;
 import javafx.scene.control.Button;
+import javafx.scene.control.ButtonBar.ButtonData;
+import javafx.scene.control.ButtonType;
 import javafx.scene.control.TextField;
 import javafx.scene.layout.StackPane;
 import javafx.stage.Stage;
@@ -23,10 +24,12 @@ import javafx.scene.control.Label;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.HBox;
 import view.BTView;
+import view.BTViewString;
 
 /**
  *
  * @author Musta
+ * @author sindreolsen
  */
 public class Oblig2 extends Application {
 
@@ -34,12 +37,29 @@ public class Oblig2 extends Application {
     public void start(Stage primaryStage) {
 
         AVLTree<Integer> tree = new AVLTree<>();
+        AVLTree<String> stringTree = new AVLTree<>();
         tree.inOrder();
 
         BorderPane pane = new BorderPane();
         BTView view = new BTView(tree);
+        BTViewString stringView = new BTViewString(stringTree);
+        
+        Alert alert = new Alert(AlertType.CONFIRMATION);
+        alert.setTitle("Bekreft");
+        alert.setHeaderText("Bekreft om du vil lage et string-tre eller integer-tre");
+        alert.setContentText("Velg alternativ:");
+        ButtonType buttonTypeOne = new ButtonType("String");
+        ButtonType buttonTypeTwo = new ButtonType("Integer");
+        ButtonType buttonTypeCancel = new ButtonType("Cancel", ButtonData.CANCEL_CLOSE);
+        alert.getButtonTypes().setAll(buttonTypeOne, buttonTypeTwo, buttonTypeCancel);
+        Optional<ButtonType> resultat = alert.showAndWait();
+        if (resultat.get() == buttonTypeOne){
+            pane.setCenter(stringView);
+        }
+        else{
+            pane.setCenter(view);
+        }
 
-        pane.setCenter(view);
         TextField tfKey = new TextField();
         tfKey.setPrefColumnCount(3);
         tfKey.setAlignment(Pos.BASELINE_RIGHT);
@@ -53,7 +73,21 @@ public class Oblig2 extends Application {
         hBox.setAlignment(Pos.CENTER);
         hBox.setSpacing(5);
         pane.setBottom(hBox);
+        
+        //innsetting av verdier
         btInsert.setOnAction(e -> {
+        	if(tfKey.getText().matches("[a-zA-Z]+")) {
+                String stringKey = tfKey.getText();
+                if (stringTree.search(stringKey)) {
+                	stringView.displayTree(); // Trengs denne?
+                	stringView.setStatus(stringKey + " finnes alt");
+                } else {
+                	stringTree.insert(stringKey);
+                	stringView.displayTree();
+                	stringView.setStatus(stringKey + " er satt inn");
+                }
+        	}
+        	else {
             int key = Integer.parseInt(tfKey.getText());
             if (tree.search(key)) {
                 view.displayTree(); // Trengs denne?
@@ -63,9 +97,23 @@ public class Oblig2 extends Application {
                 view.displayTree();
                 view.setStatus(key + " er satt inn");
             }
+          }
         });
 
+        //sletting av verdier
         btDelete.setOnAction(e -> {
+        	if(tfKey.getText().matches("[a-zA-Z]+")) {
+                String stringKey = tfKey.getText();
+                if (!stringTree.search(stringKey)) {
+                	stringView.displayTree(); // Trengs denne?
+                	stringView.setStatus(stringKey + " finnes ikke");
+                } else {
+                	stringTree.delete(stringKey);
+                	stringView.displayTree();
+                	stringView.setStatus(stringKey + " er slettet");
+                }
+        	}
+        	else {
             int key = Integer.parseInt(tfKey.getText());
             if (!tree.search(key)) {
                 view.displayTree(); // Trengs denne?
@@ -75,9 +123,23 @@ public class Oblig2 extends Application {
                 view.displayTree();
                 view.setStatus(key + " er slettet");
             }
+          }
         });
-        
+      
+        //søk etter verdier
         btSok.setOnAction(e -> {
+        	if(tfKey.getText().matches("[a-zA-Z]+")) {
+                String stringKey = tfKey.getText();
+                if (!stringTree.search(stringKey)) {
+                	stringView.displayTree(); // Trengs denne?
+                	stringView.setStatus(stringKey + " finnes ikke");
+                } else {
+                	stringTree.search(stringKey);
+                	stringView.displayTree();
+                	stringView.setStatus(stringKey + " ble funnet!");
+                }
+        	}
+        	else {
             int key = Integer.parseInt(tfKey.getText());
             if (!tree.search(key)) {
                 view.displayTree(); // Trengs denne?
@@ -87,6 +149,7 @@ public class Oblig2 extends Application {
                 view.displayTree();
                 view.setStatus(key + " ble funnet!");
             }
+          }
         });
 
         Scene scene = new Scene(pane, 600, 400);
