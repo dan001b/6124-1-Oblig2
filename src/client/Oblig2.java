@@ -48,12 +48,12 @@ public class Oblig2 extends Application {
         alert.setTitle("Bekreft");
         alert.setHeaderText("Bekreft om du vil lage et string-tre eller integer-tre");
         alert.setContentText("Velg alternativ:");
-        ButtonType buttonTypeOne = new ButtonType("String");
-        ButtonType buttonTypeTwo = new ButtonType("Integer");
+        ButtonType buttonStringChoice = new ButtonType("String");
+        ButtonType buttonIntegerChoice = new ButtonType("Integer");
         ButtonType buttonTypeCancel = new ButtonType("Cancel", ButtonData.CANCEL_CLOSE);
-        alert.getButtonTypes().setAll(buttonTypeOne, buttonTypeTwo, buttonTypeCancel);
+        alert.getButtonTypes().setAll(buttonStringChoice, buttonIntegerChoice, buttonTypeCancel);
         Optional<ButtonType> resultat = alert.showAndWait();
-        if (resultat.get() == buttonTypeOne){
+        if (resultat.get() == buttonStringChoice){
             pane.setCenter(stringView);
         }
         else{
@@ -69,7 +69,7 @@ public class Oblig2 extends Application {
         Button btRndInt = new Button("Sett inn 10 tall");
         HBox hBox = new HBox();
         hBox.getChildren().addAll(
-                new Label("Tall: "), tfKey, btInsert, btDelete, btSok, btRndInt);
+                new Label("Verdi: "), tfKey, btInsert, btDelete, btSok, btRndInt);
         hBox.setAlignment(Pos.CENTER);
         hBox.setSpacing(5);
         pane.setBottom(hBox);
@@ -87,7 +87,12 @@ public class Oblig2 extends Application {
                 	stringView.setStatus(stringKey + " er satt inn");
                 }
         	}
-        	else {
+        	else if(tfKey.getText().matches("[0-9]+")) {
+        		if(pane.getCenter()==stringView) {
+        			stringView.displayTree();
+                	stringView.setStatus("Ugyldig verdi for string-tre.");
+        		}
+        		else {
             int key = Integer.parseInt(tfKey.getText());
             if (tree.search(key)) {
                 view.displayTree(); // Trengs denne?
@@ -97,6 +102,7 @@ public class Oblig2 extends Application {
                 view.displayTree();
                 view.setStatus(key + " er satt inn");
             }
+           }
           }
         });
 
@@ -113,7 +119,12 @@ public class Oblig2 extends Application {
                 	stringView.setStatus(stringKey + " er slettet");
                 }
         	}
-        	else {
+        	else if(tfKey.getText().matches("[0-9]+")){
+        		if(pane.getCenter()==stringView) {
+                	stringView.displayTree();
+                	stringView.setStatus("Ugyldig verdi for string-tre.");
+        		}
+        		else {
             int key = Integer.parseInt(tfKey.getText());
             if (!tree.search(key)) {
                 view.displayTree(); // Trengs denne?
@@ -123,6 +134,7 @@ public class Oblig2 extends Application {
                 view.displayTree();
                 view.setStatus(key + " er slettet");
             }
+           }
           }
         });
       
@@ -139,7 +151,12 @@ public class Oblig2 extends Application {
                 	stringView.setStatus(stringKey + " ble funnet!");
                 }
         	}
-        	else {
+        	else if(tfKey.getText().matches("[0-9]+")) {
+        		if(pane.getCenter()==stringView) {
+                	stringView.displayTree();
+                	stringView.setStatus("Ugyldig verdi for string-tre.");
+        		}
+        		else {
             int key = Integer.parseInt(tfKey.getText());
             if (!tree.search(key)) {
                 view.displayTree(); // Trengs denne?
@@ -149,6 +166,7 @@ public class Oblig2 extends Application {
                 view.displayTree();
                 view.setStatus(key + " ble funnet!");
             }
+           }
           }
         });
 
