@@ -16,15 +16,16 @@ import model.BST;
  *
  * @author Musta
  */
-public class BTView extends Pane {
+public class BTView<E extends Comparable<E>> extends Pane {
 
-    private BST<Integer> tree = new BST<>();
-    private double radius = 15; // final!!!!!!
-    private double vGap = 50; // final!!!!!!
+    private BST<E> tree = new BST<>();
+    private final double RADIUS = 15;
+    private final double VGAP = 50;
+    private final String EMPTY = "Treet er tomt";
 
-    public BTView(BST<Integer> tree) {
+    public BTView(BST<E> tree) {
         this.tree = tree;
-        setStatus("Treet er tomt"); // ??????
+        setStatus(EMPTY);
     }
 
     public void setStatus(String msg) {
@@ -35,22 +36,22 @@ public class BTView extends Pane {
         this.getChildren().clear();
         if (tree.getRoot() != null) {
             displayTree(tree.getRoot(), getWidth() / 2,
-                    vGap, getWidth() / 4);
+                    VGAP, getWidth() / 4);
         }
     }
 
-private void displayTree(BST.TreeNode<Integer> root, double x, double y, double hGap) {
-    if (root.left != null){
-    getChildren().add(new Line(x-hGap, y+vGap, x, y));
-    displayTree(root.left, x-hGap, y+vGap, hGap/2);
-    }
-    if (root.right != null){
-    getChildren().add(new Line(x+hGap, y+vGap, x, y));
-    displayTree(root.right, x+hGap, y+vGap, hGap/2);
-    }
-    Circle circle = new Circle(x, y, radius);
-    circle.setFill(Color.WHITE);
-    circle.setStroke(Color.BLACK);
-    getChildren().addAll(circle, new Text(x-4, y+4, root.element + ""));
+    private void displayTree(BST.TreeNode<E> root, double x, double y, double hGap) {
+        if (root.left != null) {
+            getChildren().add(new Line(x - hGap, y + VGAP, x, y));
+            displayTree(root.left, x - hGap, y + VGAP, hGap / 2);
+        }
+        if (root.right != null) {
+            getChildren().add(new Line(x + hGap, y + VGAP, x, y));
+            displayTree(root.right, x + hGap, y + VGAP, hGap / 2);
+        }
+        Circle circle = new Circle(x, y, RADIUS);
+        circle.setFill(Color.WHITE);
+        circle.setStroke(Color.BLACK);
+        getChildren().addAll(circle, new Text(x - 4, y + 4, root.element + ""));
     }
 }

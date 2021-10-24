@@ -5,6 +5,7 @@
  */
 package client;
 
+import controller.AVLTreeController;
 import java.util.Optional;
 import javafx.application.Application;
 import javafx.scene.Scene;
@@ -14,17 +15,13 @@ import javafx.scene.control.Button;
 import javafx.scene.control.ButtonBar.ButtonData;
 import javafx.scene.control.ButtonType;
 import javafx.scene.control.TextField;
-import javafx.scene.layout.StackPane;
 import javafx.stage.Stage;
 import model.AVLTree;
-import model.BST;
-import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.control.Label;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.HBox;
 import view.BTView;
-import view.BTViewString;
 
 /**
  *
@@ -33,144 +30,67 @@ import view.BTViewString;
  */
 public class Oblig2 extends Application {
 
+    private final int W_WIDTH = 600;
+    private final int W_HEIGHT = 400;
+
+    private boolean isString;
+    private AVLTreeController avlCont;
+
     @Override
     public void start(Stage primaryStage) {
 
-        AVLTree<Integer> tree = new AVLTree<>();
-        AVLTree<String> stringTree = new AVLTree<>();
-        tree.inOrder();
-
+        avlCont = new AVLTreeController();
         BorderPane pane = new BorderPane();
-        BTView view = new BTView(tree);
-        BTViewString stringView = new BTViewString(stringTree);
-        
-        Alert alert = new Alert(AlertType.CONFIRMATION);
-        alert.setTitle("Bekreft");
-        alert.setHeaderText("Bekreft om du vil lage et string-tre eller integer-tre");
-        alert.setContentText("Velg alternativ:");
-        ButtonType buttonStringChoice = new ButtonType("String");
-        ButtonType buttonIntegerChoice = new ButtonType("Integer");
-        ButtonType buttonTypeCancel = new ButtonType("Cancel", ButtonData.CANCEL_CLOSE);
-        alert.getButtonTypes().setAll(buttonStringChoice, buttonIntegerChoice, buttonTypeCancel);
-        Optional<ButtonType> resultat = alert.showAndWait();
-        if (resultat.get() == buttonStringChoice){
-            pane.setCenter(stringView);
-        }
-        else{
-            pane.setCenter(view);
-        }
+        pane.setCenter(avlCont.getView());
+
+        isString = isString();
 
         TextField tfKey = new TextField();
         tfKey.setPrefColumnCount(3);
         tfKey.setAlignment(Pos.BASELINE_RIGHT);
+
         Button btInsert = new Button("Sett inn");
         Button btDelete = new Button("Slett");
-        Button btSok = new Button("Søk");
-        Button btRndInt = new Button("Sett inn 10 tall");
+        Button btSearch = new Button("Søk");
+        Button btRnd = new Button("Sett inn 10 verdi");
+
         HBox hBox = new HBox();
         hBox.getChildren().addAll(
-                new Label("Verdi: "), tfKey, btInsert, btDelete, btSok, btRndInt);
+                new Label("Verdi: "), tfKey, btInsert, btDelete, btSearch, btRnd);
         hBox.setAlignment(Pos.CENTER);
         hBox.setSpacing(5);
         pane.setBottom(hBox);
-        
+
         //innsetting av verdier
         btInsert.setOnAction(e -> {
-        	if(tfKey.getText().matches("[a-zA-Z]+")) {
-                String stringKey = tfKey.getText();
-                if (stringTree.search(stringKey)) {
-                	stringView.displayTree(); // Trengs denne?
-                	stringView.setStatus(stringKey + " finnes alt");
-                } else {
-                	stringTree.insert(stringKey);
-                	stringView.displayTree();
-                	stringView.setStatus(stringKey + " er satt inn");
-                }
-        	}
-        	else if(tfKey.getText().matches("[0-9]+")) {
-        		if(pane.getCenter()==stringView) {
-        			stringView.displayTree();
-                	stringView.setStatus("Ugyldig verdi for string-tre.");
-        		}
-        		else {
-            int key = Integer.parseInt(tfKey.getText());
-            if (tree.search(key)) {
-                view.displayTree(); // Trengs denne?
-                view.setStatus(key + " finnes alt");
-            } else {
-                tree.insert(key);
-                view.displayTree();
-                view.setStatus(key + " er satt inn");
-            }
-           }
-          }
+            Object key = parseKey(tfKey.getText());
+            avlCont.insert(key);
         });
 
         //sletting av verdier
         btDelete.setOnAction(e -> {
-        	if(tfKey.getText().matches("[a-zA-Z]+")) {
-                String stringKey = tfKey.getText();
-                if (!stringTree.search(stringKey)) {
-                	stringView.displayTree(); // Trengs denne?
-                	stringView.setStatus(stringKey + " finnes ikke");
-                } else {
-                	stringTree.delete(stringKey);
-                	stringView.displayTree();
-                	stringView.setStatus(stringKey + " er slettet");
-                }
-        	}
-        	else if(tfKey.getText().matches("[0-9]+")){
-        		if(pane.getCenter()==stringView) {
-                	stringView.displayTree();
-                	stringView.setStatus("Ugyldig verdi for string-tre.");
-        		}
-        		else {
-            int key = Integer.parseInt(tfKey.getText());
-            if (!tree.search(key)) {
-                view.displayTree(); // Trengs denne?
-                view.setStatus(key + " finnes ikke");
-            } else {
-                tree.delete(key);
-                view.displayTree();
-                view.setStatus(key + " er slettet");
-            }
-           }
-          }
-        });
-      
-        //søk etter verdier
-        btSok.setOnAction(e -> {
-        	if(tfKey.getText().matches("[a-zA-Z]+")) {
-                String stringKey = tfKey.getText();
-                if (!stringTree.search(stringKey)) {
-                	stringView.displayTree(); // Trengs denne?
-                	stringView.setStatus(stringKey + " finnes ikke");
-                } else {
-                	stringTree.search(stringKey);
-                	stringView.displayTree();
-                	stringView.setStatus(stringKey + " ble funnet!");
-                }
-        	}
-        	else if(tfKey.getText().matches("[0-9]+")) {
-        		if(pane.getCenter()==stringView) {
-                	stringView.displayTree();
-                	stringView.setStatus("Ugyldig verdi for string-tre.");
-        		}
-        		else {
-            int key = Integer.parseInt(tfKey.getText());
-            if (!tree.search(key)) {
-                view.displayTree(); // Trengs denne?
-                view.setStatus(key + " finnes ikke");
-            } else {
-                tree.search(key);
-                view.displayTree();
-                view.setStatus(key + " ble funnet!");
-            }
-           }
-          }
+            Object key = parseKey(tfKey.getText());
+            avlCont.delete(key);
         });
 
-        Scene scene = new Scene(pane, 600, 400);
+        //søk etter verdier
+        btSearch.setOnAction(e -> {
+            Object key = parseKey(tfKey.getText());
+            avlCont.search(key);
+        });
+
+        //sett inn 10 verdier
+        btRnd.setOnAction(e -> {
+            for (int i = 0; i < 10; i++) {
+                if (isString) {
+                    avlCont.insert(randAlphaNumericString(7));
+                } else {
+                    avlCont.insert(randNumber((int) parseKey(tfKey.getText())));
+                }
+            }
+        });
+
+        Scene scene = new Scene(pane, W_WIDTH, W_HEIGHT);
 
         primaryStage.setTitle("AVL Tree");
         primaryStage.setScene(scene);
@@ -183,6 +103,65 @@ public class Oblig2 extends Application {
      */
     public static void main(String[] args) {
         launch(args);
+    }
+
+    private Object parseKey(String s) {
+
+        Object key = null;
+        if (isString) {
+            key = (String) s;
+        } else if (!isString) {
+
+            //Dersom parsing til integer feiler vises feilmelding
+            try {
+                key = (Integer) Integer.parseInt(s);
+            } catch (NumberFormatException e) {
+                avlCont.alert("Verdi må bestå av kun tall");
+            }
+        }
+        return key;
+    }
+
+    private boolean isString() {
+
+        Alert alert = new Alert(AlertType.CONFIRMATION);
+        alert.setTitle("Bekreft");
+        alert.setHeaderText("Bekreft om du vil lage et string-tre eller integer-tre");
+        alert.setContentText("Velg alternativ:");
+        ButtonType buttonStringChoice = new ButtonType("String");
+        ButtonType buttonIntegerChoice = new ButtonType("Integer");
+        ButtonType buttonTypeCancel = new ButtonType("Cancel", ButtonData.CANCEL_CLOSE);
+        alert.getButtonTypes().setAll(buttonStringChoice, buttonIntegerChoice, buttonTypeCancel);
+        Optional<ButtonType> resultat = alert.showAndWait();
+
+        return resultat.get() == buttonStringChoice;
+    }
+
+    // function to generate a random string of length n
+    static String randAlphaNumericString(int n) {
+
+        // Mulige tegn som kan velges
+        String AlphaNumericString = "ABCDEFGHIJKLMNOPQRSTUVWXYZ"
+                + "0123456789"
+                + "abcdefghijklmnopqrstuvxyz";
+
+        // oppretter StringBuffer
+        StringBuilder sb = new StringBuilder(n);
+
+        for (int i = 0; i < n; i++) {
+
+            // tilfeldig nummer fra 0 til n
+            int index = randNumber(n);
+
+            // legg til tegn til sb basert på plassering i AlphaNumericString
+            sb.append(AlphaNumericString.charAt(index));
+        }
+
+        return sb.toString();
+    }
+
+    static int randNumber(int n) {
+        return (int) (n * Math.random());
     }
 
 }
