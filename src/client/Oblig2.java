@@ -16,17 +16,17 @@ import javafx.scene.control.ButtonBar.ButtonData;
 import javafx.scene.control.ButtonType;
 import javafx.scene.control.TextField;
 import javafx.stage.Stage;
-import model.AVLTree;
 import javafx.geometry.Pos;
 import javafx.scene.control.Label;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.HBox;
-import view.BTView;
 
 /**
+ * 6124-1 21H Algoritmer og datastrukturer Oblig2-grupper 3
  *
- * @author Musta
- * @author sindreolsen
+ * @author Mustafa Waleed Alqaisy (studentnummer: 216557)
+ * @author Sindre Andreas Olsen Strømnæss (studentnummer: 233595)
+ *
  */
 public class Oblig2 extends Application {
 
@@ -38,12 +38,13 @@ public class Oblig2 extends Application {
 
     @Override
     public void start(Stage primaryStage) {
-
+        
+        isString = isString();
+        
         avlCont = new AVLTreeController();
         BorderPane pane = new BorderPane();
         pane.setCenter(avlCont.getView());
 
-        isString = isString();
 
         TextField tfKey = new TextField();
         tfKey.setPrefColumnCount(3);
@@ -104,7 +105,15 @@ public class Oblig2 extends Application {
     public static void main(String[] args) {
         launch(args);
     }
-
+    
+    
+    /**
+     * metoden behandler data som settes inn, basert på 
+     * modus (Integer/String) så vil den forsøke å levere tilbake object
+     * av riktig klasse. Feil type innhold varsles.
+     *
+     * @param s rå data fra inputfeltet
+     */
     private Object parseKey(String s) {
 
         Object key = null;
@@ -116,28 +125,36 @@ public class Oblig2 extends Application {
             try {
                 key = (Integer) Integer.parseInt(s);
             } catch (NumberFormatException e) {
-                avlCont.alert("Verdi må bestå av kun tall");
+                avlCont.alert("Verdi må bestå av kun tall",null);
             }
         }
         return key;
     }
-
+    
+     /**
+     * metoden viser vindu og etterlyser type data som skal settes inn
+     * standard er tall (Integer) kan byttes til tekst (String). 
+     */
     private boolean isString() {
 
         Alert alert = new Alert(AlertType.CONFIRMATION);
         alert.setTitle("Bekreft");
-        alert.setHeaderText("Bekreft om du vil lage et string-tre eller integer-tre");
-        alert.setContentText("Velg alternativ:");
-        ButtonType buttonStringChoice = new ButtonType("String");
-        ButtonType buttonIntegerChoice = new ButtonType("Integer");
-        ButtonType buttonTypeCancel = new ButtonType("Cancel", ButtonData.CANCEL_CLOSE);
-        alert.getButtonTypes().setAll(buttonStringChoice, buttonIntegerChoice, buttonTypeCancel);
+        alert.setHeaderText("Programmet tillater som standard kun tallverdi");
+        alert.setContentText("Vil du bytte til tekst?");
+        ButtonType buttonStringChoice = new ButtonType("Bytt til tekst");
+
+        ButtonType buttonTypeCancel = new ButtonType("Fortsett med tall");
+        alert.getButtonTypes().setAll(buttonStringChoice, buttonTypeCancel);
         Optional<ButtonType> resultat = alert.showAndWait();
 
         return resultat.get() == buttonStringChoice;
     }
 
-    // function to generate a random string of length n
+    /**
+     * metoden oppretter String med tilfeldig tegn
+     *
+     * @param n antall tegn
+     */
     static String randAlphaNumericString(int n) {
 
         // Mulige tegn som kan velges
@@ -150,8 +167,8 @@ public class Oblig2 extends Application {
 
         for (int i = 0; i < n; i++) {
 
-            // tilfeldig nummer fra 0 til n
-            int index = randNumber(n);
+            // tilfeldig nummer fra 0 til nummeret antall mulige tegn
+            int index = randNumber(AlphaNumericString.length());
 
             // legg til tegn til sb basert på plassering i AlphaNumericString
             sb.append(AlphaNumericString.charAt(index));
@@ -159,7 +176,12 @@ public class Oblig2 extends Application {
 
         return sb.toString();
     }
-
+    
+    /**
+     * metoden oppretter tilfeldig tall
+     *
+     * @param n tallet oppretes i intervall 0-n
+     */
     static int randNumber(int n) {
         return (int) (n * Math.random());
     }

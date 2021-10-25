@@ -13,8 +13,11 @@ import javafx.scene.text.Text;
 import model.BST;
 
 /**
+ * 6124-1 21H Algoritmer og datastrukturer Oblig2-grupper 3
  *
- * @author Musta
+ * @author Mustafa Waleed Alqaisy (studentnummer: 216557)
+ * @author Sindre Andreas Olsen Strømnæss (studentnummer: 233595)
+ *
  */
 public class BTView<E extends Comparable<E>> extends Pane {
 
@@ -32,25 +35,30 @@ public class BTView<E extends Comparable<E>> extends Pane {
         getChildren().add(new Text(20, 20, msg));
     }
 
-    public void displayTree() {
+    public void displayTree(E e) {
         this.getChildren().clear();
         if (tree.getRoot() != null) {
             displayTree(tree.getRoot(), getWidth() / 2,
-                    VGAP, getWidth() / 4);
+                    VGAP, getWidth() / 4, e);
         }
     }
 
-    private void displayTree(BST.TreeNode<E> root, double x, double y, double hGap) {
+    private void displayTree(BST.TreeNode<E> root, double x, double y, double hGap, E e) {
         if (root.left != null) {
             getChildren().add(new Line(x - hGap, y + VGAP, x, y));
-            displayTree(root.left, x - hGap, y + VGAP, hGap / 2);
+            displayTree(root.left, x - hGap, y + VGAP, hGap / 2, e);
         }
         if (root.right != null) {
             getChildren().add(new Line(x + hGap, y + VGAP, x, y));
-            displayTree(root.right, x + hGap, y + VGAP, hGap / 2);
+            displayTree(root.right, x + hGap, y + VGAP, hGap / 2, e);
         }
         Circle circle = new Circle(x, y, RADIUS);
-        circle.setFill(Color.WHITE);
+        if (e.compareTo(root.element) == 0) {
+            circle.setFill(Color.RED);
+        }else
+            circle.setFill(Color.WHITE);
+        
+        
         circle.setStroke(Color.BLACK);
         getChildren().addAll(circle, new Text(x - 4, y + 4, root.element + ""));
     }
