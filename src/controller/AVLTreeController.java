@@ -22,6 +22,8 @@ public class AVLTreeController {
     final String ADDED = " er satt inn";
     final String DELETED = " er slettet";
     final String FOUND = " ble funnet";
+    final String TOOSMALL = " for lite";
+    final String TOOBIG = " for stort";
 
     public AVLTreeController() {
         tree = new AVLTree<>();
@@ -31,10 +33,10 @@ public class AVLTreeController {
     public boolean insert(Object o) {
         boolean sucsess = false;
         if (o != null) {
-            if (tree.search(o)) {
+            if (tree.search((Comparable) o)) {
                 updateStatus(o.toString() + EXISTS);
             } else {
-                sucsess = tree.insert(o);
+                sucsess = tree.insert((Comparable) o);
                 updateStatus(o.toString() + ADDED);
             }
         }
@@ -44,10 +46,10 @@ public class AVLTreeController {
     public boolean delete(Object o) {
         boolean sucsess = false;
         if (o != null) {
-            if (!tree.search(o)) {
+            if (!tree.search((Comparable) o)) {
                 updateStatus(o + DOES_NOT_EXISTS);
             } else {
-                sucsess = tree.delete(o);
+                sucsess = tree.delete((Comparable) o);
                 updateStatus(o + DELETED);
             }
         }
@@ -57,7 +59,7 @@ public class AVLTreeController {
     public boolean search(Object o) {
         boolean sucsess = false;
         if (o != null) {
-            sucsess = tree.search(o);
+            sucsess = tree.search((Comparable) o);
             if (!sucsess) {
                 updateStatus(o + DOES_NOT_EXISTS);
             } else {
@@ -66,6 +68,16 @@ public class AVLTreeController {
         }
         return sucsess;
 
+    }
+    
+    public void findNthSmallest(int n) {
+    	if(n < 1 || n > tree.size()) {
+    		updateStatus(TOOSMALL+" eller"+TOOBIG);
+    	}
+    		else{
+    		Object result = (Object) tree.find(n);
+    		updateStatus("Det "+n+" minste elementet er: "+result);
+    	}
     }
 
     public BTView getView() {
