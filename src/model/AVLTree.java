@@ -43,8 +43,26 @@ public class AVLTree<E extends Comparable<E>> extends BST<E> {
         } else {
             balancePath(e); // Balance from e to the root if necessary
         }
-
         return true; // e is inserted
+    }
+    
+    /**
+     * 
+     * Set the size of AVLTreeNode
+     */
+    private void updateSize(AVLTreeNode<E>node) {
+    	if(node.left == null && node.right == null) {
+    		node.size = 1;
+    	}
+    	else if(node.left == null) {
+    		node.size = 1 + ((AVLTreeNode<E>)(node.right)).size;
+    	}
+    	else if(node.right == null) {
+    		node.size = 1 + ((AVLTreeNode<E>)(node.left)).size;
+    	}
+    	else {
+    		node.size = 1 + ((AVLTreeNode<E>)(node.right)).size + ((AVLTreeNode<E>)(node.left)).size;
+    	}
     }
 
     /**
@@ -76,6 +94,7 @@ public class AVLTree<E extends Comparable<E>> extends BST<E> {
         for (int i = path.size() - 1; i >= 0; i--) {
             AVLTreeNode<E> A = (AVLTreeNode<E>) (path.get(i));
             updateHeight(A);
+            updateSize(A);
             AVLTreeNode<E> parentOfA = (A == root) ? null
                     : (AVLTreeNode<E>) (path.get(i - 1));
 
@@ -133,6 +152,8 @@ public class AVLTree<E extends Comparable<E>> extends BST<E> {
         B.right = A; // Make A the left child of B
         updateHeight((AVLTreeNode<E>) A);
         updateHeight((AVLTreeNode<E>) B);
+        updateSize((AVLTreeNode<E>) A);
+        updateSize((AVLTreeNode<E>) B);
     }
 
     /**
@@ -161,6 +182,9 @@ public class AVLTree<E extends Comparable<E>> extends BST<E> {
         updateHeight((AVLTreeNode<E>) A);
         updateHeight((AVLTreeNode<E>) B);
         updateHeight((AVLTreeNode<E>) C);
+        updateSize((AVLTreeNode<E>) A);
+        updateSize((AVLTreeNode<E>) B);
+        updateSize((AVLTreeNode<E>) C);
     }
 
     /**
@@ -183,6 +207,8 @@ public class AVLTree<E extends Comparable<E>> extends BST<E> {
         B.left = A;
         updateHeight((AVLTreeNode<E>) A);
         updateHeight((AVLTreeNode<E>) B);
+        updateSize((AVLTreeNode<E>) A);
+        updateSize((AVLTreeNode<E>) B);
     }
 
     /**
@@ -211,6 +237,9 @@ public class AVLTree<E extends Comparable<E>> extends BST<E> {
         updateHeight((AVLTreeNode<E>) A);
         updateHeight((AVLTreeNode<E>) B);
         updateHeight((AVLTreeNode<E>) C);
+        updateSize((AVLTreeNode<E>) A);
+        updateSize((AVLTreeNode<E>) B);
+        updateSize((AVLTreeNode<E>) C);
     }
 
     @Override
@@ -285,6 +314,36 @@ public class AVLTree<E extends Comparable<E>> extends BST<E> {
         size--;
         return true; // Element inserted
     }
+    
+    public E find(int n) {
+    	if(n < 1 || n > size) { //kan egentlig fjernes..
+    		return null;
+    	}
+    	return find(n, root);
+    	
+    }
+    
+    public E find(int n, TreeNode<E> root) {
+    	AVLTreeNode<E> A = (AVLTreeNode<E>) root.left;
+    	AVLTreeNode<E> B = (AVLTreeNode<E>) root.right;
+    	E nthElement = null;
+    	if(A == null && n == 1) {
+    		nthElement = root.element;
+    	}
+    	else if(A == null && n == 2) {
+    		nthElement = B.element;
+    	}
+    	else if(n <= A.size){
+    		return find(n, A);
+    	}
+    	else if(n == A.size + 1) {
+    		nthElement = root.element;
+    	}
+    	else if(n > A.size + 1) {
+    		return find(n - A.size - 1, B);
+    	}
+		return nthElement;
+    }
 
     /**
      * AVLTreeNode is TreeNode plus height
@@ -293,6 +352,7 @@ public class AVLTree<E extends Comparable<E>> extends BST<E> {
             extends BST.TreeNode<E> {
 
         protected int height = 0; // New data field
+        protected int size = 0;
 
         public AVLTreeNode(E e) {
             super(e);

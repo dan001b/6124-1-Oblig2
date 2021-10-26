@@ -4,9 +4,8 @@
  * and open the template in the editor.
  */
 package client;
-
-import controller.AVLTreeController;
 import java.util.Optional;
+import controller.AVLTreeController;
 import javafx.application.Application;
 import javafx.scene.Scene;
 import javafx.scene.control.Alert;
@@ -54,10 +53,11 @@ public class Oblig2 extends Application {
         Button btDelete = new Button("Slett");
         Button btSearch = new Button("Søk");
         Button btRnd = new Button("Sett inn 10 verdi");
+        Button findNthSmallest = new Button("Find [Nth] smallest value");
 
         HBox hBox = new HBox();
         hBox.getChildren().addAll(
-                new Label("Verdi: "), tfKey, btInsert, btDelete, btSearch, btRnd);
+                new Label("Verdi: "), tfKey, btInsert, btDelete, btSearch, btRnd, findNthSmallest);
         hBox.setAlignment(Pos.CENTER);
         hBox.setSpacing(5);
         pane.setBottom(hBox);
@@ -89,6 +89,11 @@ public class Oblig2 extends Application {
                     avlCont.insert(randNumber((int) parseKey(tfKey.getText())));
                 }
             }
+        });
+        
+        findNthSmallest.setOnAction(e -> {
+        		int key = Integer.parseInt(tfKey.getText());
+        		avlCont.findNthSmallest(key);
         });
 
         Scene scene = new Scene(pane, W_WIDTH, W_HEIGHT);
