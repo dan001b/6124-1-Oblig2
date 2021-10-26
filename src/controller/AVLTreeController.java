@@ -9,8 +9,11 @@ import model.AVLTree;
 import view.BTView;
 
 /**
+ * 6124-1 21H Algoritmer og datastrukturer Oblig2-grupper 3
  *
- * @author Musta
+ * @author Mustafa Waleed Alqaisy (studentnummer: 216557)
+ * @author Sindre Andreas Olsen Strømnæss (studentnummer: 233595)
+ *
  */
 public class AVLTreeController {
 
@@ -28,8 +31,14 @@ public class AVLTreeController {
     public AVLTreeController() {
         tree = new AVLTree<>();
         view = new BTView(tree);
+        
     }
-
+    
+    /**
+     * metoden setter inn ny verdi i tree
+     *
+     * @param o bjektet som skal settes inn
+     */
     public boolean insert(Object o) {
         boolean sucsess = false;
         if (o != null) {
@@ -38,6 +47,10 @@ public class AVLTreeController {
             } else {
                 sucsess = tree.insert((Comparable) o);
                 updateStatus(o.toString() + ADDED);
+                updateStatus(o.toString() + EXISTS,o);
+            } else {
+                sucsess = tree.insert((Comparable) o);
+                updateStatus(o.toString() + ADDED,o);
             }
         }
         return sucsess;
@@ -51,19 +64,24 @@ public class AVLTreeController {
             } else {
                 sucsess = tree.delete((Comparable) o);
                 updateStatus(o + DELETED);
+                updateStatus(o + DOES_NOT_EXISTS,o);
+            } else {
+                sucsess = tree.delete((Comparable) o);
+                updateStatus(o + DELETED,o);
             }
         }
         return sucsess;
     }
 
     public boolean search(Object o) {
+        
         boolean sucsess = false;
         if (o != null) {
             sucsess = tree.search((Comparable) o);
             if (!sucsess) {
-                updateStatus(o + DOES_NOT_EXISTS);
+                updateStatus(o + DOES_NOT_EXISTS,o);
             } else {
-                updateStatus(o + FOUND);
+                updateStatus(o + FOUND,o);
             }
         }
         return sucsess;
@@ -84,12 +102,14 @@ public class AVLTreeController {
         return view;
     }
 
-    public void alert(String s) {
-        updateStatus(s);
+    public void alert(String s,Object o) {
+        updateStatus(s,o);
     }
 
-    private void updateStatus(String s) {
-        view.displayTree();
+    private void updateStatus(String s,Object o) {
+        if (o != null) {
+            view.displayTree((Comparable) o);
+        }
         view.setStatus(s);
     }
 
