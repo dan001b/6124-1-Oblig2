@@ -43,11 +43,7 @@ public class AVLTreeController {
         boolean sucsess = false;
         if (o != null) {
             if (tree.search((Comparable) o)) {
-                updateStatus(o.toString() + EXISTS);
-            } else {
-                sucsess = tree.insert((Comparable) o);
-                updateStatus(o.toString() + ADDED);
-                updateStatus(o.toString() + EXISTS,o);
+                updateStatus(o.toString() + EXISTS, o);
             } else {
                 sucsess = tree.insert((Comparable) o);
                 updateStatus(o.toString() + ADDED,o);
@@ -60,11 +56,7 @@ public class AVLTreeController {
         boolean sucsess = false;
         if (o != null) {
             if (!tree.search((Comparable) o)) {
-                updateStatus(o + DOES_NOT_EXISTS);
-            } else {
-                sucsess = tree.delete((Comparable) o);
-                updateStatus(o + DELETED);
-                updateStatus(o + DOES_NOT_EXISTS,o);
+                updateStatus(o + DOES_NOT_EXISTS, o);
             } else {
                 sucsess = tree.delete((Comparable) o);
                 updateStatus(o + DELETED,o);
@@ -90,11 +82,11 @@ public class AVLTreeController {
     
     public void findNthSmallest(int n) {
     	if(n < 1 || n > tree.size()) {
-    		updateStatus(TOOSMALL+" eller"+TOOBIG);
+    		updateStatus(TOOSMALL+" eller"+TOOBIG, null);
     	}
     		else{
     		Object result = (Object) tree.find(n);
-    		updateStatus("Det "+n+" minste elementet er: "+result);
+    		updateStatus("Det "+n+" minste elementet er: "+result, result);
     	}
     }
 
