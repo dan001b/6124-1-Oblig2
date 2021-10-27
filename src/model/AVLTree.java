@@ -6,8 +6,13 @@
 package model;
 
 /**
+ * 6124-1 21H Algoritmer og datastrukturer Oblig2-grupper 3
  *
- * @author Musta
+ * Denne koden er hovedsaklig basert på samme klasse fra boka
+ *
+ * @author Mustafa Waleed Alqaisy (studentnummer: 216557)
+ * @author Sindre Andreas Olsen Strømnæss (studentnummer: 233595)
+ *
  */
 public class AVLTree<E extends Comparable<E>> extends BST<E> {
 
@@ -45,24 +50,21 @@ public class AVLTree<E extends Comparable<E>> extends BST<E> {
         }
         return true; // e is inserted
     }
-    
+
     /**
-     * 
+     *
      * Set the size of AVLTreeNode
      */
-    private void updateSize(AVLTreeNode<E>node) {
-    	if(node.left == null && node.right == null) {
-    		node.size = 1;
-    	}
-    	else if(node.left == null) {
-    		node.size = 1 + ((AVLTreeNode<E>)(node.right)).size;
-    	}
-    	else if(node.right == null) {
-    		node.size = 1 + ((AVLTreeNode<E>)(node.left)).size;
-    	}
-    	else {
-    		node.size = 1 + ((AVLTreeNode<E>)(node.right)).size + ((AVLTreeNode<E>)(node.left)).size;
-    	}
+    private void updateSize(AVLTreeNode<E> node) {
+        if (node.left == null && node.right == null) {
+            node.size = 1;
+        } else if (node.left == null) {
+            node.size = 1 + ((AVLTreeNode<E>) (node.right)).size;
+        } else if (node.right == null) {
+            node.size = 1 + ((AVLTreeNode<E>) (node.left)).size;
+        } else {
+            node.size = 1 + ((AVLTreeNode<E>) (node.right)).size + ((AVLTreeNode<E>) (node.left)).size;
+        }
     }
 
     /**
@@ -269,9 +271,9 @@ public class AVLTree<E extends Comparable<E>> extends BST<E> {
         if (current == null) {
             return false; // Element is not in the tree
         }
-// Case 1: current has no left children (See Figure 25.10)
+        // Case 1: current has no left children (See Figure 25.10)
         if (current.left == null) {
-// Connect the parent with the right child of the current node
+            // Connect the parent with the right child of the current node
             if (parent == null) {
                 root = current.right;
             } else {
@@ -281,13 +283,13 @@ public class AVLTree<E extends Comparable<E>> extends BST<E> {
                     parent.right = current.right;
                 }
 
-// Balance the tree if necessary
+                // Balance the tree if necessary
                 balancePath(parent.element);
             }
         } else {
-// Case 2: The current node has a left child
-// Locate the rightmost node in the left subtree of
-// the current node and also its parent
+            // Case 2: The current node has a left child
+            // Locate the rightmost node in the left subtree of
+            // the current node and also its parent
             TreeNode<E> parentOfRightMost = current;
             TreeNode<E> rightMost = current.left;
 
@@ -296,10 +298,10 @@ public class AVLTree<E extends Comparable<E>> extends BST<E> {
                 rightMost = rightMost.right; // Keep going to the right
             }
 
-// Replace the element in current by the element in rightMost
+            // Replace the element in current by the element in rightMost
             current.element = rightMost.element;
 
-// Eliminate rightmost node
+            // Eliminate rightmost node
             if (parentOfRightMost.right == rightMost) {
                 parentOfRightMost.right = rightMost.left;
             } else // Special case: parentOfRightMost is current
@@ -307,42 +309,38 @@ public class AVLTree<E extends Comparable<E>> extends BST<E> {
                 parentOfRightMost.left = rightMost.left;
             }
 
-// Balance the tree if necessary
+            // Balance the tree if necessary
             balancePath(parentOfRightMost.element);
         }
 
         size--;
         return true; // Element inserted
     }
-    
+
     public E find(int n) {
-    	if(n < 1 || n > size) { //kan egentlig fjernes..
-    		return null;
-    	}
-    	return find(n, root);
-    	
+        if (n < 1 || n > size) {
+            return null;
+        }
+        return find(n, root);
+
     }
-    
+
     public E find(int n, TreeNode<E> root) {
-    	AVLTreeNode<E> A = (AVLTreeNode<E>) root.left;
-    	AVLTreeNode<E> B = (AVLTreeNode<E>) root.right;
-    	E nthElement = null;
-    	if(A == null && n == 1) {
-    		nthElement = root.element;
-    	}
-    	else if(A == null && n == 2) {
-    		nthElement = B.element;
-    	}
-    	else if(n <= A.size){
-    		return find(n, A);
-    	}
-    	else if(n == A.size + 1) {
-    		nthElement = root.element;
-    	}
-    	else if(n > A.size + 1) {
-    		return find(n - A.size - 1, B);
-    	}
-		return nthElement;
+        AVLTreeNode<E> A = (AVLTreeNode<E>) root.left;
+        AVLTreeNode<E> B = (AVLTreeNode<E>) root.right;
+        E nthElement = null;
+        if (A == null && n == 1) {
+            nthElement = root.element;
+        } else if (A == null && n == 2) {
+            nthElement = B.element;
+        } else if (n <= A.size) {
+            return find(n, A);
+        } else if (n == A.size + 1) {
+            nthElement = root.element;
+        } else if (n > A.size + 1) {
+            return find(n - A.size - 1, B);
+        }
+        return nthElement;
     }
 
     /**

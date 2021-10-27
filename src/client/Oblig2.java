@@ -4,6 +4,7 @@
  * and open the template in the editor.
  */
 package client;
+
 import java.util.Optional;
 import controller.AVLTreeController;
 import javafx.application.Application;
@@ -11,7 +12,6 @@ import javafx.scene.Scene;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Alert.AlertType;
 import javafx.scene.control.Button;
-import javafx.scene.control.ButtonBar.ButtonData;
 import javafx.scene.control.ButtonType;
 import javafx.scene.control.TextField;
 import javafx.stage.Stage;
@@ -37,13 +37,12 @@ public class Oblig2 extends Application {
 
     @Override
     public void start(Stage primaryStage) {
-        
+
         isString = isString();
-        
+
         avlCont = new AVLTreeController();
         BorderPane pane = new BorderPane();
         pane.setCenter(avlCont.getView());
-
 
         TextField tfKey = new TextField();
         tfKey.setPrefColumnCount(3);
@@ -53,7 +52,7 @@ public class Oblig2 extends Application {
         Button btDelete = new Button("Slett");
         Button btSearch = new Button("Søk");
         Button btRnd = new Button("Sett inn 10 verdi");
-        Button findNthSmallest = new Button("Find [Nth] smallest value");
+        Button findNthSmallest = new Button("Finn [Nth] minste verdi");
 
         HBox hBox = new HBox();
         hBox.getChildren().addAll(
@@ -71,29 +70,45 @@ public class Oblig2 extends Application {
         //sletting av verdier
         btDelete.setOnAction(e -> {
             Object key = parseKey(tfKey.getText());
-            avlCont.delete(key);
+            if (key != null) 
+                avlCont.delete(key);
         });
 
         //søk etter verdier
         btSearch.setOnAction(e -> {
             Object key = parseKey(tfKey.getText());
-            avlCont.search(key);
+            if (key != null)
+                avlCont.search(key);
         });
 
         //sett inn 10 verdier
         btRnd.setOnAction(e -> {
-            for (int i = 0; i < 10; i++) {
+            int count = 0;
+            int seed = 100; //tilfeldig tall velges fra i 
+
+            while (count < 10) {
+                boolean check = false;
                 if (isString) {
-                    avlCont.insert(randAlphaNumericString(7));
+                    check = avlCont.insert(randAlphaNumericString(7));
                 } else {
-                    avlCont.insert(randNumber((int) parseKey(tfKey.getText())));
+                    check = avlCont.insert(randNumber(seed += 1));
+                }
+
+                if (check == true) {
+                    count++;
                 }
             }
         });
-        
+
+        //finner n. minste tallet 
         findNthSmallest.setOnAction(e -> {
-        		int key = Integer.parseInt(tfKey.getText());
-        		avlCont.findNthSmallest(key);
+            int key = 0;
+            try {
+                key = (Integer) Integer.parseInt(tfKey.getText());
+                avlCont.findNthSmallest((int)key);
+            } catch (NumberFormatException ex) {
+                avlCont.alert("Verdi må bestå av kun tall");
+            }
         });
 
         Scene scene = new Scene(pane, W_WIDTH, W_HEIGHT);
@@ -110,12 +125,11 @@ public class Oblig2 extends Application {
     public static void main(String[] args) {
         launch(args);
     }
-    
-    
+
     /**
-     * metoden behandler data som settes inn, basert på 
-     * modus (Integer/String) så vil den forsøke å levere tilbake object
-     * av riktig klasse. Feil type innhold varsles.
+     * metoden behandler data som settes inn, basert på modus (Integer/String)
+     * så vil den forsøke å levere tilbake object av riktig klasse. Feil type
+     * innhold varsles.
      *
      * @param s rå data fra inputfeltet
      */
@@ -130,15 +144,15 @@ public class Oblig2 extends Application {
             try {
                 key = (Integer) Integer.parseInt(s);
             } catch (NumberFormatException e) {
-                avlCont.alert("Verdi må bestå av kun tall",null);
+                avlCont.alert("Verdi må bestå av kun tall");
             }
         }
         return key;
     }
-    
-     /**
-     * metoden viser vindu og etterlyser type data som skal settes inn
-     * standard er tall (Integer) kan byttes til tekst (String). 
+
+    /**
+     * metoden viser vindu og etterlyser type data som skal settes inn standard
+     * er tall (Integer) kan byttes til tekst (String).
      */
     private boolean isString() {
 
@@ -181,7 +195,7 @@ public class Oblig2 extends Application {
 
         return sb.toString();
     }
-    
+
     /**
      * metoden oppretter tilfeldig tall
      *

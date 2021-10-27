@@ -1,10 +1,17 @@
 package model;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Iterator;
-import java.util.Random;
 
+/**
+ * 6124-1 21H Algoritmer og datastrukturer Oblig2-grupper 3
+ *
+ * Denne koden er hovedsaklig basert på samme klasse fra boka
+ *
+ * @author Mustafa Waleed Alqaisy (studentnummer: 216557)
+ * @author Sindre Andreas Olsen Strømnæss (studentnummer: 233595)
+ *
+ */
 public class BST<E extends Comparable<E>> implements Tree<E> {
 
     protected TreeNode<E> root;
