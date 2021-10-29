@@ -27,11 +27,10 @@ public class AVLTreeController {
     final String FOUND = " ble funnet";
     final String BIG_SMALL = " for lite eller for stort";
     
-
+    //konstruktørmetode
     public AVLTreeController() {
         tree = new AVLTree<>();
         view = new BTView(tree);
-
     }
 
     /**
@@ -94,8 +93,8 @@ public class AVLTreeController {
     
     /**
      * metoden finner verdi i tree basert på
-     * forhold fra minste. returnerer 
-     * n. minste verdi
+     * forhold fra lavest-høyest. returnerer 
+     * n. minste verdi. 
      *
      * @param n indeks relativ til minste verdi
      */
@@ -116,6 +115,11 @@ public class AVLTreeController {
         updateTreeView(s, null);
     }
 
+    /**
+     * 
+     * @param s Tekststreng som skal vises i view
+     * @param o Objekt som avgjør om view skal oppdateres eller bare tekst
+     */
     private void updateTreeView(String s, Object o) {
         if (o != null) {
             view.displayTree((Comparable) o);
