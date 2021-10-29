@@ -8,7 +8,8 @@ package model;
 /**
  * 6124-1 21H Algoritmer og datastrukturer Oblig2-grupper 3
  *
- * Denne koden er hovedsaklig basert på samme klasse fra boka
+ * Store deler av denne koden er hovedsaklig basert på samme klasse fra boka.
+ * Y, Daniel Liang. (2019). Introduction to Java Programming and Data Structures (11.utg.). Pearson Education.
  *
  * @author Mustafa Waleed Alqaisy (studentnummer: 216557)
  * @author Sindre Andreas Olsen Strømnæss (studentnummer: 233595)
@@ -53,7 +54,8 @@ public class AVLTree<E extends Comparable<E>> extends BST<E> {
 
     /**
      *
-     * Set the size of AVLTreeNode
+     * Setter str til AVLTreeNode
+     * For hver balansering, oppdater size til AVLTreeNode om nødvendig
      */
     private void updateSize(AVLTreeNode<E> node) {
         if (node.left == null && node.right == null) {
@@ -179,8 +181,8 @@ public class AVLTree<E extends Comparable<E>> extends BST<E> {
         B.right = C.left; // Make T2 the right subtree of B
         C.left = B;
         C.right = A;
-
-// Adjust heights
+        
+        // Adjust heights
         updateHeight((AVLTreeNode<E>) A);
         updateHeight((AVLTreeNode<E>) B);
         updateHeight((AVLTreeNode<E>) C);
@@ -234,8 +236,8 @@ public class AVLTree<E extends Comparable<E>> extends BST<E> {
         B.left = C.right; // Make T3 the left subtree of B
         C.left = A;
         C.right = B;
-
-// Adjust heights
+        
+        // Adjust heights
         updateHeight((AVLTreeNode<E>) A);
         updateHeight((AVLTreeNode<E>) B);
         updateHeight((AVLTreeNode<E>) C);
@@ -253,7 +255,8 @@ public class AVLTree<E extends Comparable<E>> extends BST<E> {
         if (root == null) {
             return false; // Element is not in the tree
         }
-// Locate the node to be deleted and also locate its parent node
+        
+        // Locate the node to be deleted and also locate its parent node
         TreeNode<E> parent = null;
         TreeNode<E> current = root;
         while (current != null) {
@@ -317,40 +320,52 @@ public class AVLTree<E extends Comparable<E>> extends BST<E> {
         return true; // Element inserted
     }
 
+    /**
+     * 
+     * @param n Index for minste element
+     * @return
+     */
     public E find(int n) {
-        if (n < 1 || n > size) {
+        if (n < 1 || n > size) { //base case
             return null;
         }
         return find(n, root);
 
     }
 
+    /**
+     * 
+     * @param n Tall for nth minste element
+     * @param root Root node i Tree
+     * @return Returnerer generisk verdi (Ex: integer/string) av en AVLTreeNode plassert på n fra minste
+     * verdi og oppover i Tree.
+     */
     public E find(int n, TreeNode<E> root) {
-        AVLTreeNode<E> A = (AVLTreeNode<E>) root.left;
-        AVLTreeNode<E> B = (AVLTreeNode<E>) root.right;
-        E nthElement = null;
+        AVLTreeNode<E> A = (AVLTreeNode<E>) root.left; // A blir venstre childnode av root hvis finnes
+        AVLTreeNode<E> B = (AVLTreeNode<E>) root.right; // B blir høyre childnode av root hvis finnes
+        E nthElement = null; // skal få verdi av node plassert på index n
         if (A == null && n == 1) {
             nthElement = root.element;
         } else if (A == null && n == 2) {
             nthElement = B.element;
         } else if (n <= A.size) {
-            return find(n, A);
+            return find(n, A); //rekursivt kall
         } else if (n == A.size + 1) {
             nthElement = root.element;
         } else if (n > A.size + 1) {
-            return find(n - A.size - 1, B);
+            return find(n - A.size - 1, B); //rekursivt kall
         }
         return nthElement;
     }
 
     /**
-     * AVLTreeNode is TreeNode plus height
+     * AVLTreeNode is TreeNode plus height and size
      */
     protected static class AVLTreeNode<E extends Comparable<E>>
             extends BST.TreeNode<E> {
 
         protected int height = 0; // New data field
-        protected int size = 0;
+        protected int size = 0; // size er nødvendig for balansering og traversering når nth minste element skal letes etter 
 
         public AVLTreeNode(E e) {
             super(e);

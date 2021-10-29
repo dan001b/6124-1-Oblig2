@@ -5,8 +5,9 @@ import java.util.Collection;
 /**
  * 6124-1 21H Algoritmer og datastrukturer Oblig2-grupper 3
  *
- * Denne koden er hovedsaklig basert på samme klasse fra boka
- *
+ * Denne koden er hovedsaklig basert på samme klasse fra boken
+ * Y, Daniel Liang. (2019). Introduction to Java Programming and Data Structures (11.utg.). Pearson Education.
+ * 
  * @author Mustafa Waleed Alqaisy (studentnummer: 216557)
  * @author Sindre Andreas Olsen Strømnæss (studentnummer: 233595)
  *
