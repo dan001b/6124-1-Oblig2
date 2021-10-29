@@ -17,15 +17,15 @@ import view.BTView;
  */
 public class AVLTreeController {
 
-    private AVLTree tree;
-    private BTView view;
+    private final AVLTree tree;
+    private final BTView view;
 
-    final String EXISTS = " finnes alt";
-    final String DOES_NOT_EXISTS = " finnes ikke";
-    final String ADDED = " er satt inn";
-    final String DELETED = " er slettet";
-    final String FOUND = " ble funnet";
-    final String BIG_SMALL = " for lite eller for stort";
+    static final String EXISTS = " finnes alt";
+    static final String DOES_NOT_EXISTS = " finnes ikke";
+    static final String ADDED = " er satt inn";
+    static final String DELETED = " er slettet";
+    static final String FOUND = " ble funnet";
+    static final String BIG_SMALL = " for lite eller for stort";
     
     //konstruktørmetode
     public AVLTreeController() {

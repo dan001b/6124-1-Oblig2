@@ -21,13 +21,17 @@ import model.BST;
  */
 public class BTView<E extends Comparable<E>> extends Pane {
 
-    private BST<E> tree = new BST<>();
-    private final double RADIUS = 15;
-    private final double VGAP = 50;
-    private final String EMPTY = "Treet er tomt";
-    private final Text msg = new Text(20, 20, EMPTY);
+    private final BST<E> tree;
+    private final double RADIUS;
+    private final double VGAP;
+    private final String EMPTY;
+    private final Text msg;
 
     public BTView(BST<E> tree) {
+        this.EMPTY = "Treet er tomt";
+        this.msg = new Text(20, 20, EMPTY);
+        this.VGAP = 50;
+        this.RADIUS = 15;
         this.tree = tree;
         setStatus(EMPTY);
         getChildren().add(msg);
@@ -36,7 +40,12 @@ public class BTView<E extends Comparable<E>> extends Pane {
     public void setStatus(String msg) {
         this.msg.setText(msg);
     }
-
+    
+    /**
+     * Drivermetoden som brukes av andre klasser.
+     *
+     * @param e aktiv element av type E som skal markeres med rød farge
+     */
     public void displayTree(E e) {
         this.getChildren().clear();
         if (tree.getRoot() != null) {
@@ -45,7 +54,13 @@ public class BTView<E extends Comparable<E>> extends Pane {
         }
         this.getChildren().add(msg);
     }
-
+    
+    /**
+     * Metoden tegner BST tre. Treet tegnes rekrusivt og markerer et element
+     * (aktiv elemnt) med rød farge. Kun brukt av driver metode i denne klassen.
+     *
+     * @param e aktiv element av type E som skal markeres med rød farge
+     */
     private void displayTree(BST.TreeNode<E> root, double x, double y, double hGap, E e) {
         if (root.left != null) {
             getChildren().add(new Line(x - hGap, y + VGAP, x, y));
@@ -57,13 +72,18 @@ public class BTView<E extends Comparable<E>> extends Pane {
         }
 
         Text text = new Text(x - 4, y + 4, root.element + "");
-
-        double textW = text.getLayoutBounds().getWidth() / 2;
-        text.setX(x - textW);
-
-        double radiusX = (textW > RADIUS) ? textW + 4 : RADIUS;
-
+        
+        //hennter textbredde delt på to (tilsvarer radius for cirkel rundt 
+        //teksten) og flytter teksten slik at midpunktet er riktig plassert
+        double textRadius = text.getLayoutBounds().getWidth() / 2;
+        text.setX(x - textRadius);
+        
+        //dersom textRadius er lengre enn radius for cirkel blir
+        //utvides bredden ved å sette ny horisontal radius til tekstradius
+        double radiusX = (textRadius > RADIUS) ? textRadius + 4 : RADIUS;
+        
         Ellipse node = new Ellipse(x, y, radiusX, RADIUS);
+        
         if (e.compareTo(root.element) == 0) {
             node.setFill(Color.RED);
             text.setFill(Color.WHITE);
